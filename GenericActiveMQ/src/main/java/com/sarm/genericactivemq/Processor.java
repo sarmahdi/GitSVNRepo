@@ -52,7 +52,12 @@ public class Processor implements MessageListener {
         consumer = session.createConsumer(requestQueue);
         consumer.setMessageListener(this);
     }
-
+/**
+ * Using the new features of java 7 this should not be needed anymore as the 
+ * try-with-resource block should be able to close all such resources. 
+ * For simplicity this is being implemented the old fashion way
+ * @throws Exception 
+ */
     public void stop() throws Exception {
         producer.close();
         consumer.close();
