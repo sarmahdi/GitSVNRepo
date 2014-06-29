@@ -34,7 +34,7 @@ public class RequestorReceiver implements MessageListener {
     Logger logger = Logger.getLogger(RequestorReceiver.class);
     private Connection connection;
     private Session session;
-    private String requestQueue="MyRequestQueue";
+    private String requestQueueName="MyRequestQueue";
     private MessageProducer producer;
     private Destination replyToQueue;
     private MessageConsumer consumer;
@@ -45,8 +45,8 @@ public class RequestorReceiver implements MessageListener {
         connection = connectionFactory.createConnection();
         connection.start();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Destination adminQueue = session.createQueue(requestQueue);
-        producer = session.createProducer(adminQueue);
+        Destination requestQueue = session.createQueue(requestQueueName);
+        producer = session.createProducer(requestQueue);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         replyToQueue = session.createTemporaryQueue();
 //        logger.debug("");
@@ -85,7 +85,7 @@ public class RequestorReceiver implements MessageListener {
         requestorReceiver.start();
         int i = 0;
         while (i++ < 10) {
-            requestorReceiver.request("Requesting for : " + i);
+            requestorReceiver.request("Sending request for : " + i);
         }
         Thread.sleep(6000);
         requestorReceiver.stop();

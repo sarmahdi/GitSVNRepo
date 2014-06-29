@@ -37,7 +37,7 @@ public class Processor implements MessageListener {
 
     private MessageProducer producer;
     private MessageConsumer consumer;
-    private String requestQueue = "MyRequestQueue";
+    private String requestQueueName = "MyRequestQueue";
 
     private void setupConsumer() throws JMSException {
         ActiveMQConnectionFactory connectionFactory
@@ -46,10 +46,10 @@ public class Processor implements MessageListener {
         connection = connectionFactory.createConnection();
         connection.start();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Destination adminQueue = session.createQueue(requestQueue);
+        Destination requestQueue = session.createQueue(requestQueueName);
         producer = session.createProducer(null);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        consumer = session.createConsumer(adminQueue);
+        consumer = session.createConsumer(requestQueue);
         consumer.setMessageListener(this);
     }
 
