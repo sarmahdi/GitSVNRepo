@@ -35,12 +35,13 @@ public class Processor implements MessageListener {
     Logger logger = Logger.getLogger(Processor.class);
     private Session session;
 
+    private ActiveMQConnectionFactory connectionFactory;
     private MessageProducer producer;
     private MessageConsumer consumer;
     private String requestQueueName = "MyRequestQueue";
 
     private void setupConsumer() throws JMSException {
-        ActiveMQConnectionFactory connectionFactory
+         connectionFactory
                 = new ActiveMQConnectionFactory(BROKER_URL);
         Connection connection;
         connection = connectionFactory.createConnection();
@@ -53,9 +54,8 @@ public class Processor implements MessageListener {
         consumer.setMessageListener(this);
     }
 /**
- * Using the new features of java 7 this should not be needed anymore as the 
- * try-with-resource block should be able to close all such resources. 
- * For simplicity this is being implemented the old fashion way
+  Since the activeMQ API has not updated to implement AutoCloseable these need 
+ * to be closed manually
  * @throws Exception 
  */
     public void stop() throws Exception {
@@ -145,6 +145,9 @@ public class Processor implements MessageListener {
      */
     public static void main(String[] args) throws Exception {
         Processor processor = new Processor();
+         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_URL);
+         
+     
         processor.start();
         System.out.println();
         System.out.println("Press any key to stop the server");

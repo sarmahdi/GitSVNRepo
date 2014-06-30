@@ -54,9 +54,8 @@ public class RequestorReceiver implements MessageListener {
         consumer.setMessageListener(this);
     }
 /**
- Using the new features of java 7 this should not be needed anymore as the 
- * try-with-resource block should be able to close all such resources. 
- * For simplicity this is being implemented the old fashion way
+ Since the activeMQ API has not updated to implement AutoCloseable these need 
+ * to be closed manually
  * @throws JMSException 
  */
     public void stop() throws JMSException {
