@@ -220,3 +220,7 @@ pip-log.txt
 /utilitiesOnWeb/ear/target/
 /utilitiesOnWeb/utilitiesOnWeb/target/
 /GenericActiveMQ/target/
+/activitiTestProject/activitiTestProject-ejb/target/
+/activitiTestProject/activitiTestProject-web/target/
+/activitiTestProject/activitiTestProject-ear/target/
+/springRESTful/target/
