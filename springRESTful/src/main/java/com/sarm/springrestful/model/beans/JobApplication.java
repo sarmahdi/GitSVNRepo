@@ -52,8 +52,48 @@ public class JobApplication {
     @OneToOne
     @JoinColumn(name="APPLICANT_ID", nullable=false)
     private JobApplicant applicant;
+
+    public Long getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(Long applicationId) {
+        this.applicationId = applicationId;
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
+    public String getApplicationType() {
+        return applicationType;
+    }
+
+    public void setApplicationType(String applicationType) {
+        this.applicationType = applicationType;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public JobApplicant getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(JobApplicant applicant) {
+        this.applicant = applicant;
+    }
     
-   @Embe
+  
     
   
 }

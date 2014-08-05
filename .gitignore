@@ -224,3 +224,6 @@ pip-log.txt
 /activitiTestProject/activitiTestProject-web/target/
 /activitiTestProject/activitiTestProject-ear/target/
 /springRESTful/target/
+/InMemoryCache/target/
+/WorkItemExecutor/nbproject/private/
+/WorkItemExecutor/target/
