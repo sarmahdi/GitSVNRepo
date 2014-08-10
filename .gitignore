@@ -227,3 +227,5 @@ pip-log.txt
 /InMemoryCache/target/
 /WorkItemExecutor/nbproject/private/
 /WorkItemExecutor/target/
+/AussieTaxCalculator/nbproject/private/
+/AussiePaySlipGenerator/target/
