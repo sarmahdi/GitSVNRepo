@@ -1,3 +1,12 @@
+Project Name:		InMemoryCache
+
+Status:			Complete
+Notes			Should auto run on deployment in Tomcat or Glassfish
+Frameworks/API:		Junit.
+IDE:			NetBeans IDE
+Application Servers	
+JDK:			Java 7
+
 This is an simple implementation of an In Memory Cache using a ConcurrentMap. The project is built through maven.
 
 There is a test harness to test the functionailty of the cache. The testcases are written in Junit 4.11

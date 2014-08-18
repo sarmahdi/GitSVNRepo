@@ -1,3 +1,11 @@
+Project Name:		GenericActiveMQAdapter
+Status:			Complete
+Notes			
+Frameworks/API:		Active MQ libraries
+IDE:			NetBeans IDE
+Application Servers	GlassFish
+JDK:			Java 7
+
 To come up with the example and to understand how ActiveMQ works, help was taken from online resources and different articles and stackoverflow QnAs as well as the examples that come with the ActiveMQ binary release.
 
 The example follows the Request/Reply paradigm which I have worked with in my previous project for a corporate banking application. 

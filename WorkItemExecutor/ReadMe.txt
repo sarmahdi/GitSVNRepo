@@ -1,3 +1,12 @@
+Project Name:		WorkItemExecutor
+
+Status:			Complete
+Notes			
+Frameworks/APIs		Junit.
+IDE:			NetBeans IDE
+Application Servers	GlassFish/Tomcat
+JDK:			Java 7
+
 This is a simple framework to execute a task (called here a Work Item) with multiple threads. 
 
 There are two packages in the framework for the implementation. Each package follows a different possible situation. There are two ways to envision a task that can be executed by multiple threads. Either the task has sub work items that are in itself a complete work item and can be executed independently  in parallel using a thread or it is a task that can be repeated in parallel by a number of threads simultaneously or concurrently.
