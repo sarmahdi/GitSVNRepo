@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 /**
  * This class processes the destinations.xml. It uses StAX to process the xml
- * and un marshalls to list of destinations objects. It uses ForkJoinPool to 
+ * and un marshals to list of destinations objects. It uses ForkJoinPool to 
  * process for each destination in the list in order to create htmls for each of 
  * the destination.
  * @author sarm

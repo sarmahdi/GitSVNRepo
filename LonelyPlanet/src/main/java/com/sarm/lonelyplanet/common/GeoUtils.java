@@ -657,10 +657,7 @@ public class GeoUtils {
         source = new File(cssFileLocation);
 
         File dest = new File(newCSSTargetLocation + "/static/all.css");
-        logger.debug("Absoulte path of css file  : " + source.getAbsolutePath());
-        /**
-         * The Block below works when executing the jar
-         */
+    
         InputStream input;
         input = GeoUtils.class.getClassLoader().getResourceAsStream(cssFileLocation);
 
@@ -685,25 +682,12 @@ public class GeoUtils {
 
         }
 
-//        /**
-//         * This Block works when doing compile and tests are run through
-//         * Surefire
-//         */
-//        if(null == cssString){
-//            try {
-//            cssString = FileUtils.readFileToString(source, "UTF-8");
-//        } catch (IOException ex) {
-//            logger.error("Exception occured when reading through new File " + cssFileLocation);
-//            ex.printStackTrace();
-//        }
-//        }
         if (null == dest) {
             logger.debug("destination file is a null file Cannot proceed to create all.css in " + newCSSTargetLocation);
         } else {
-            logger.debug(" dest not null " + dest.getAbsolutePath());
             try {
                 FileUtils.writeStringToFile(dest, cssString, "UTF-8");
-                logger.debug(" all.css created to new location  Through File Utils  >>" + dest.getAbsolutePath());
+                logger.debug(" all.css created to new location   >>" + dest.getAbsolutePath());
             } catch (IOException ex) {
                 logger.error("Exception occured when writing to  " + dest.getAbsolutePath());
                 ex.printStackTrace();

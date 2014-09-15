@@ -117,7 +117,7 @@ public class LPUnMarshaller {
         if (null != taxonomies) {
 
             try {
-                logger.debug("Processing Destyinations ... ");
+                logger.debug("Processing Destinations ... ");
 
                 List<Destination> destinations = new ArrayList<>();
                 destinations.addAll(destinationProcessor.processDestinationsConcurrently(taxonomies.getTaxonomy(), destinationsFileName, htmlTargetLocation));
@@ -146,8 +146,6 @@ public class LPUnMarshaller {
             try (InputStream input = LPUnMarshaller.class.getClassLoader().getResourceAsStream(propFileName);) {
                 prop.load(input);
                 cssFileLocation = prop.getProperty(LonelyConstants.cssFileLocation);
-                logger.debug("cssFileLocation  " + cssFileLocation);
-
                 GeoUtils.copyCSS(htmlTargetLocation, cssFileLocation);
             } catch (Exception ex) {
                 logger.debug("Exception @ copyCSS ...");

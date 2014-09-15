@@ -336,9 +336,8 @@ public final class LonelyConstants {
    
     public static String thirtyThousandDestsFile =  ".\\30000dests.xml";
     public static String cssFileLocation = "cssFileLocation";
-
-   
-    
+    public static String indexOfdestInConcurrent =  "indexOfdestInConcurrent";   
+    static String sampleDestinationHtml= "sampleDestinationHtml";
    
    
      

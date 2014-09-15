@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.concurrent.RecursiveAction;
 
 /**
+ * This class is the recursive action that will be added to the ForkJoinPool to
+ * It will add itself recursively to for each destination and create Html files
+ * for each destination.
  *
  * @author sarm
  */

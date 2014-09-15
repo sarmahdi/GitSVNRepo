@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sarm.lonelyplanet.process;
 
 import com.sarm.lonelyplanet.common.LonelyConstants;
@@ -26,8 +25,7 @@ import static org.junit.Assert.*;
  * @author sarm
  */
 public class TaxonomyProcessorTest {
-    
-    
+
     static Logger logger = Logger.getLogger(TaxonomyProcessorTest.class);
     private static String taxonomyFileName;
     private static Taxonomies taxonomies;
@@ -40,11 +38,11 @@ public class TaxonomyProcessorTest {
 
     public TaxonomyProcessorTest() {
     }
-    
-       @BeforeClass
+
+    @BeforeClass
     public static void setUpClass() {
         Properties prop = new Properties();
-        logger.info("GeoUtilsTest : setup commencing..");
+        logger.info("Taxonomy Processor Test : Commencing loading test properties ...");
         String propFileName = LonelyConstants.testPropertyFile;
 
         try (InputStream input = new FileInputStream(propFileName)) {
@@ -56,18 +54,16 @@ public class TaxonomyProcessorTest {
             prop.load(input);
 
         } catch (FileNotFoundException ex) {
+            logger.debug("FileNotFoundException ....");
             ex.printStackTrace();
-
-            logger.debug("");
         } catch (IOException ex) {
-            logger.debug("");
+            logger.debug("IOException....");
+            ex.printStackTrace();
         }
         taxonomyFileName = prop.getProperty(LonelyConstants.propertyTaxonomy);
 
         expectedTaxonomyChildName = prop.getProperty(LonelyConstants.expectedTaxonomyChildName);
         expectedTaxonomyParentofChild = prop.getProperty(LonelyConstants.expectedTaxonomyParentofChild);
-        logger.debug("prop.getProperty(LonelyConstants.indexOfNodesInTaxonomyForPH)  " + prop.getProperty(LonelyConstants.indexOfNodesInTaxonomyForPH) + "  expectedTaxonomyChildName  " + expectedTaxonomyChildName + "  expectedTaxonomyParentofChild   " + expectedTaxonomyParentofChild);
-
         indexOfChildrenInParentalH = Integer.valueOf(prop.getProperty(LonelyConstants.indexOfChildrenInParentalH));
         indexOfChildNodes = Integer.valueOf(prop.getProperty(LonelyConstants.indexOfChildNodes));
         indexOfNodeInTaxonomy = Integer.valueOf(prop.getProperty(LonelyConstants.indexOfNodeInTaxonomy));
@@ -94,38 +90,25 @@ public class TaxonomyProcessorTest {
      */
     @Test
     public void testProcessTaxonomy() {
-        System.out.println("processTaxonomy");
+        logger.info("processTaxonomy");
 
         String expResult = expectedTaxonomyChildName;
         Taxonomies result = new Taxonomies();
-        try {
-            result = TaxonomyProcessor.processTaxonomy(taxonomyFileName);
-        } catch (JAXBException | FileNotFoundException ex) {
-            logger.error(" JAXBException in Test case ..   :  testProcessTaxonomy");
-
-            ex.printStackTrace();
-        }
+        
+            result = taxonomies;
+        
         Node node = result.getTaxonomy().getNodesInTaxonomy().get(indexOfNodeInTaxonomy).getChildrenNodes().get(indexOfChildNodes);
 
         assertEquals(expResult, node.getNodeName());
-        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
     }
 
     @Test
     public void testSetParentalHierarchy() {
-        System.out.println("setParentalHierarchy");
+        logger.info("setParentalHierarchy");
 
         String expResult = expectedTaxonomyParentofChild;
         Taxonomies result = new Taxonomies();
-        try {
-            result = TaxonomyProcessor.processTaxonomy(taxonomyFileName);
-        } catch (JAXBException | FileNotFoundException ex) {
-
-            logger.error(" Exception in Test case ..   :  testSetParentalHierarchy");
-
-            ex.printStackTrace();
-        }
+        result = taxonomies;
         Node node = result.getTaxonomy().getNodesInTaxonomy().get(indexOfNodesInTaxonomyForPH).getChildrenNodes().get(indexOfChildrenInParentalH);
 
         assertEquals(expResult, node.getParentNode().getNodeName());

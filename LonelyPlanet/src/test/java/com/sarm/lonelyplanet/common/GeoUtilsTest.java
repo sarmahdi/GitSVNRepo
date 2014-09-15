@@ -19,7 +19,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -41,7 +43,7 @@ public class GeoUtilsTest {
     private static String destinationTitle;
     private static String parentLink;
     private static String childrenLink;
-    private static String cssFileLocation;
+    private static String sampleDestinationHtml;
 
     public GeoUtilsTest() {
     }
@@ -55,7 +57,7 @@ public class GeoUtilsTest {
     @BeforeClass
     public static void setUpClass() {
         Properties prop = new Properties();
-        logger.info("GeoUtilsTest : setup commencing..");
+        logger.info("GeoUtilsTest : Commencing loading test properties ...");
         String propFileName = LonelyConstants.testPropertyFile;
 
         try (InputStream input = new FileInputStream(propFileName)) {
@@ -77,8 +79,7 @@ public class GeoUtilsTest {
         destinationTitle = prop.getProperty(LonelyConstants.destinationTitle);
         parentLink = prop.getProperty(LonelyConstants.parentLink);
         childrenLink = prop.getProperty(LonelyConstants.childrenLink);
-        cssFileLocation = prop.getProperty(LonelyConstants.cssFileLocation);
-        TaxonomyProcessor tHandler = new TaxonomyProcessor();
+        sampleDestinationHtml = prop.getProperty(LonelyConstants.sampleDestinationHtml);
 
         try {
             taxonomies = TaxonomyProcessor.processTaxonomy(taxonomyFileName);
@@ -95,6 +96,12 @@ public class GeoUtilsTest {
 
     @AfterClass
     public static void tearDownClass() {
+
+        logger.info("Tearing down GeoUtilsTest and deleting the sample_destination.html file");
+        File file = new File(sampleDestinationHtml);
+        
+            FileUtils.deleteQuietly(file);
+        
     }
 
     /**
@@ -103,16 +110,12 @@ public class GeoUtilsTest {
     @Test
     public void testGetNodeByDestinationTitle() {
 
-        System.out.println("getNodeByDestinationTitle");
+        logger.info("Testing getNodeByDestinationTitle");
         Taxonomy taxonomy = taxonomies.getTaxonomy();
-        logger.debug("taxonomies  . toxanomy. nodes. size  .. " + taxonomies.getTaxonomy().getNodesInTaxonomy().size());
         String name = taxonomy.getNodesInTaxonomy().get(0).getChildrenNodes().get(0).getChildrenNodes().get(0).getNodeName();
-
         String expResult = destinationTitle;
         Node result = GeoUtils.getNodeByDestinationTitle(taxonomy, name);
         assertEquals(expResult, result.getNodeName());
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
     }
 
     /**
@@ -120,7 +123,7 @@ public class GeoUtilsTest {
      */
     @Test
     public void testPopulateParents() {
-        System.out.println("populateParents");
+        logger.info(" Testing populateParents");
         Node node = populateParentNode;
         StringBuilder navigation = new StringBuilder("");
         String expResult = parentLink;
@@ -134,14 +137,12 @@ public class GeoUtilsTest {
      */
     @Test
     public void testNavigateIntoChildren() {
-        System.out.println("navigateIntoChildren");
+        logger.info(" Testing navigateIntoChildren");
         Node node = navigateIntoChildrenNode;
         StringBuilder childNavigation = new StringBuilder("");
         String expResult = childrenLink;
         StringBuilder result = GeoUtils.navigateIntoChildren(node, childNavigation);
         assertEquals(expResult, result.toString());
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
     }
 
     /**
@@ -151,26 +152,21 @@ public class GeoUtilsTest {
      */
     @Test
     public void testCreateHtmlFromTemplate() {
-        System.out.println("testCreateHtmlFromTemplate");
+        logger.info(" Testing testCreateHtmlFromTemplate");
         Destination destination = new Destination();
         destination.setTitle("SAMPLE DESTINATION");
         Node node = new Node();
         node.setNodeName("SAMPLE DESTINATION");
         try {
-            GeoUtils.createHtmlFromTemplate(destination, node, ".//");
+            GeoUtils.createHtmlFromTemplate(destination, node, sampleDestinationHtml);
         } catch (IOException | NullPointerException ex) {
             ex.printStackTrace();
             logger.debug(" exception creating the HTML template ... ");
         }
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(".//sample_destination.html"));
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-            logger.debug(" reader creation exception ....");
-        }
-        assertNotNull(reader);
-        String line = null;
+//        BufferedReader reader = null;
+        try(BufferedReader reader = new BufferedReader(new FileReader(sampleDestinationHtml+"sample_destination.html"));) {
+             assertNotNull(reader);
+               String line = null;
         try {
             for (int i = 0; i < 39; i++) {
                 line = reader.readLine();
@@ -182,6 +178,12 @@ public class GeoUtilsTest {
         }
 
         assertTrue(line.contains("SAMPLE DESTINATION"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            logger.debug(" IOException reader creation exception ....");
+        }
+       
+      
     }
 
     /**
@@ -189,7 +191,7 @@ public class GeoUtilsTest {
      */
     @Test
     public void testReplaceSpaces() {
-        System.out.println("replaceSpaces");
+        logger.info("Testing replaceSpaces");
         String title = "The Northern Sea Shore";
         String expResult = "the_northern_sea_shore";
         String result = GeoUtils.replaceSpaces(title);

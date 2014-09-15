@@ -28,11 +28,10 @@ public class TaxonomyProcessor {
 
     public static Taxonomies processTaxonomy(String taxonomyFileName) throws FileNotFoundException, JAXBException {
         JAXBContext jaxbcontext = JAXBContext.newInstance(Taxonomies.class);
-        System.out.println("JAXB Context is=" + jaxbcontext.toString());
         Unmarshaller unmarshaller = jaxbcontext.createUnmarshaller();
 
         Taxonomies taxonomies = new Taxonomies();
-        logger.info("Relativepath " + new File(".").getAbsolutePath());
+//        logger.info("Relativepath " + new File(".").getAbsolutePath());
         /**
          * if the passed in file name is empty then defaulting to packaged file.
          */

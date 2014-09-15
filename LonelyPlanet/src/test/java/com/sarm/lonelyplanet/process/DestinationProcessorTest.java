@@ -5,7 +5,6 @@
  */
 package com.sarm.lonelyplanet.process;
 
-import com.sarm.lonelyplanet.XMLParser.LPUnMarshallerTest;
 import com.sarm.lonelyplanet.common.LonelyConstants;
 import com.sarm.lonelyplanet.model.Destination;
 import com.sarm.lonelyplanet.model.Destinations;
@@ -25,6 +24,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,10 +42,11 @@ public class DestinationProcessorTest {
     private static String targetLocation;
     private static String destinationFileName;
     private static Taxonomies sampleTesttaxonomies;
-    private static Taxonomies originalTaxonomies;
+ 
     private static Integer numOfDestinations;
     private static String destinationsConcurrantlyExpresult;
     private static String regressDestinationfile;
+    private static String indexOfdestInConcurrent;
 
     public DestinationProcessorTest() {
     }
@@ -79,14 +80,10 @@ public class DestinationProcessorTest {
         destinationFileName = prop.getProperty(LonelyConstants.propertyDestination);
         destinationsConcurrantlyExpresult = prop.getProperty(LonelyConstants.destinationsConcurrantlyExpresult);
         numOfDestinations = Integer.valueOf(prop.getProperty(LonelyConstants.numOfDestinations));
-        logger.debug("numOfDestinations  " + numOfDestinations + "  LonelyConstants.numOfDestinations  " + LonelyConstants.numOfDestinations + "  prop.getProperty(LonelyConstants.numOfDestinations)   " + prop.getProperty(LonelyConstants.numOfDestinations));
         regressDestinationfile = prop.getProperty(LonelyConstants.regressDestinationfile);
-
+        indexOfdestInConcurrent = prop.getProperty(LonelyConstants.indexOfdestInConcurrent);
         try {
             sampleTesttaxonomies = TaxonomyProcessor.processTaxonomy(taxonomyFileName);
-            logger.debug("sampleTesttaxonomies   " + sampleTesttaxonomies.getTaxonomy().getNodesInTaxonomy().get(0).getChildrenNodes().size());
-            originalTaxonomies = TaxonomyProcessor.processTaxonomy(".//taxonomy.xml");
-            logger.debug("originalTaxonomies   " + originalTaxonomies.getTaxonomy().getNodesInTaxonomy().get(0).getChildrenNodes().size());
         } catch (FileNotFoundException ex) {
             logger.debug("FileNotFoundException  on file  : " + taxonomyFileName);
             ex.printStackTrace();
@@ -109,13 +106,14 @@ public class DestinationProcessorTest {
      */
     @Test
     public void testProcessDestinationsConcurrently() throws Exception {
-        System.out.println("processDestinationsConcurrently");
+        logger.info(" Testing processDestinationsConcurrently");
         Taxonomy taxonomy = sampleTesttaxonomies.getTaxonomy();
         DestinationProcessor destinationProcessor = new DestinationProcessor();
-        int expResult = Integer.valueOf(destinationsConcurrantlyExpresult);
+        String expResult = destinationsConcurrantlyExpresult;
         List<Destination> result = destinationProcessor.processDestinationsConcurrently(taxonomy, destinationFileName, targetLocation);
         assertNotNull(result);
-        assertEquals(expResult, result.size());
+        int index =  Integer.valueOf(indexOfdestInConcurrent);
+        assertEquals(expResult, result.get(index).getTitle());
     }
 
 
@@ -126,7 +124,7 @@ public class DestinationProcessorTest {
      */
     @Test
     public void testProcessDestinationByStAX() throws Exception {
-        System.out.println("processDestinationByStAX");
+        logger.info("Testing processDestinationByStAX");
 //         destinationFileName = ".//destinations.xml";
         DestinationProcessor destinationProcessor = new DestinationProcessor();
         int expResult = numOfDestinations;
@@ -144,7 +142,7 @@ public class DestinationProcessorTest {
      */
     @Test
     public void testProcessDestinationByStAXfor30000() throws Exception {
-        System.out.println("processDestinationByStAX30000");
+        logger.info("Testing processDestinationByStAX30000");
 
         String destinationFileName = regressDestinationfile;
         DestinationProcessor destinationProcessor = new DestinationProcessor();
@@ -162,12 +160,14 @@ public class DestinationProcessorTest {
      */
     @Test
     public void testJAXBContext() {
+        logger.info("Testing testJAXBContext ");
         JAXBContext jc = null;
         try {
 
             jc = JAXBContext.newInstance(Destinations.class);
         } catch (JAXBException ex) {
-            java.util.logging.Logger.getLogger(LPUnMarshallerTest.class.getName()).log(Level.SEVERE, null, ex);
+     logger.error(ex);
+        ex.printStackTrace();
         }
         String context = "class org.eclipse.persistence.jaxb.JAXBContext";
         assertEquals(context, jc.getClass().toString());
@@ -215,9 +215,13 @@ public class DestinationProcessorTest {
 
     @AfterClass
     public static void tearDownClass() {
-        logger.info("Tearing down LPUnMarshallar and deleting the 30000dests.xml file");
-        File file = new File(regressDestinationfile);
-        file.delete();
+       
+            logger.info("Tearing down DestinationProcessorTest and deleting the 30000dests.xml file and "+targetLocation+"  folder");
+            File file = new File(regressDestinationfile);
+            file.delete();
+          
+            File file2 = new File(targetLocation);
+            FileUtils.deleteQuietly(file2);
     }
 
 }
