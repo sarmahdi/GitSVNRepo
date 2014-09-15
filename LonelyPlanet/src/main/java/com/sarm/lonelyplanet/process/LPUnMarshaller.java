@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  */
 public class LPUnMarshaller {
 
-    static Logger logger = Logger.getLogger(DestinationProcessor.class);
+    static Logger logger = Logger.getLogger(LPUnMarshaller.class);
     String taxonomyFileName = "";
     String destinationsFileName = "";
     String htmlTargetLocation = "";
