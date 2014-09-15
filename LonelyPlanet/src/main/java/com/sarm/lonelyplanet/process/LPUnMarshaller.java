@@ -9,24 +9,16 @@ import com.sarm.lonelyplanet.common.GeoUtils;
 import com.sarm.lonelyplanet.common.LonelyConstants;
 import com.sarm.lonelyplanet.model.Destination;
 import com.sarm.lonelyplanet.model.Taxonomies;
-import com.sarm.lonelyplanet.model.Taxonomy;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ForkJoinPool;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import org.apache.log4j.Logger;
 
 /**
@@ -34,9 +26,116 @@ import org.apache.log4j.Logger;
  * @author sarm
  */
 public class LPUnMarshaller {
-     static Logger logger = Logger.getLogger(DestinationProcessor.class);
 
-   
+    static Logger logger = Logger.getLogger(DestinationProcessor.class);
+    String taxonomyFileName = "";
+    String destinationsFileName = "";
+    String htmlTargetLocation = "";
+    String cssFileLocation = "";
+
+    public LPUnMarshaller() {
+    }
+
+    /**
+     * This is the constructor with arguments in order to use this un marshaller
+     * as an API and can be instantiated. In order to run it instead through
+     * main method, startProcess Method can be called after initialization.
+     *
+     * @param taxonomyFileName
+     * @param destinationsFileName
+     * @param htmlTargetLocation
+     * @param cssFileLocation
+     */
+    public LPUnMarshaller(String taxonomyFileName, String destinationsFileName, String htmlTargetLocation, String cssFileLocation) {
+        this.taxonomyFileName = taxonomyFileName;
+        this.destinationsFileName = destinationsFileName;
+        this.htmlTargetLocation = htmlTargetLocation;
+        this.cssFileLocation = cssFileLocation;
+    }
+
+    /**
+     * This method will trigger the un marshalling and html generation process
+     * using initialized values from the argument constructor
+     *
+     * @return
+     */
+    public boolean startProcess() {
+        Taxonomies taxonomies = new Taxonomies();
+        DestinationProcessor destinationProcessor = new DestinationProcessor();
+
+        if ((null != taxonomyFileName) && (null != destinationsFileName) && (null != htmlTargetLocation)) {
+            try {
+                logger.debug("Processing Taxonomy ... ");
+
+                taxonomies = TaxonomyProcessor.processTaxonomy(taxonomyFileName);
+                logger.debug("Processing Taxonomy ... Done with " + taxonomies.getTaxonomy().getNodesInTaxonomy().size() + " Nodes in Taxonomy");
+
+            } catch (FileNotFoundException ex) {
+                logger.debug("File Not found... Please check the location", ex);
+                ex.printStackTrace();
+
+            } catch (JAXBException ex) {
+                logger.debug("JAXB Exception caught .... " + ex);
+                ex.printStackTrace();
+
+            }
+
+            //Processing Destinations
+            if (null != taxonomies) {
+
+                try {
+                    logger.debug("Processing Destinations ... ");
+
+                    List<Destination> destinations = new ArrayList<>();
+                    destinations.addAll(destinationProcessor.processDestinationsConcurrently(taxonomies.getTaxonomy(), destinationsFileName, htmlTargetLocation));
+
+                    logger.debug("Processing Destinations ... Done with " + destinations.size() + " destinations");
+                } catch (XMLStreamException ex) {
+                    logger.debug("XMLStreamException  has occured ... ", ex);
+                    ex.printStackTrace();
+                } catch (FileNotFoundException ex) {
+                    logger.debug("FileNotFoundException  has occured ... on file  " + destinationsFileName, ex);
+                    ex.printStackTrace();
+
+                } catch (JAXBException ex) {
+                    logger.debug("JAXBException  has occured ... ", ex);
+                    ex.printStackTrace();
+
+                } catch (UnsupportedEncodingException ex) {
+                    logger.debug("UnsupportedEncodingException  has occured ... ", ex);
+                    ex.printStackTrace();
+
+                }
+                //Copying the CSS file suplied with the output example
+                if (null != cssFileLocation) {
+                    GeoUtils.copyCSS(htmlTargetLocation, cssFileLocation);
+                } else {
+                    Properties prop = new Properties();
+                    String propFileName = LonelyConstants.appPropertyFile;
+
+                    try (InputStream input = LPUnMarshaller.class.getClassLoader().getResourceAsStream(propFileName);) {
+                        prop.load(input);
+                        cssFileLocation = prop.getProperty(LonelyConstants.cssFileLocation);
+                        GeoUtils.copyCSS(htmlTargetLocation, cssFileLocation);
+                    } catch (Exception ex) {
+                        logger.debug("Exception @ copyCSS ...");
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+            return true;
+        } else {
+            
+             logger.debug(" The supplied values for the LPUnMarshaller are invalid ..." );
+             logger.debug("taxonomy FileName  : "+taxonomyFileName);
+             logger.debug("destinations FileName :"+destinationsFileName);
+             logger.debug("html Target Location  :"+htmlTargetLocation);
+            return false;
+        }
+
+    }
+
     /**
      * This is the main method which is the entry point of this batch
      * application. It takes three argument from the command line Taxonomy file,
