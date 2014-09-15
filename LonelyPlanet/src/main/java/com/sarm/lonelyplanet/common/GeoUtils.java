@@ -687,8 +687,7 @@ public class GeoUtils {
         } else {
             try {
                 FileUtils.writeStringToFile(dest, cssString, "UTF-8");
-                logger.debug(" all.css created to new location   >>" + dest.getAbsolutePath());
-            } catch (IOException ex) {
+              } catch (IOException ex) {
                 logger.error("Exception occured when writing to  " + dest.getAbsolutePath());
                 ex.printStackTrace();
             }
