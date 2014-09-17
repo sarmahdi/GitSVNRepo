@@ -229,3 +229,6 @@ pip-log.txt
 /WorkItemExecutor/target/
 /AussieTaxCalculator/nbproject/private/
 /AussiePaySlipGenerator/target/
+/MavenCalculator/target/
+/AngularJSTaxCalculator/target/
+/LonelyPlanet/target/

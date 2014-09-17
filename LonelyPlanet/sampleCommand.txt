@@ -1,0 +1,1 @@
+java -jar LonelyPlanet-1.0-SNAPSHOT-jar-with-dependencies.jar C:\JavaProjects\GitSVNRepo\LonelyPlanet\taxonomy.xml C:\JavaProjects\GitSVNRepo\LonelyPlanet\destinations.xml C:\JavaProjects\GitSVNRepo\LonelyPlanet\newHtml\
